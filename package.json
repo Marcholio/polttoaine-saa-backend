@@ -1,0 +1,19 @@
+{
+  "name": "polttoaine-saa-backend",
+  "version": "1.0.0",
+  "description": "Backend for fuel price weather service",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marcholio/polttoaine-saa-backend.git"
+  },
+  "author": "Markus Tyrkkö",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Marcholio/polttoaine-saa-backend/issues"
+  },
+  "homepage": "https://github.com/Marcholio/polttoaine-saa-backend#readme"
+}
