@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Marcholio/polttoaine-saa-backend/issues"
   },
-  "homepage": "https://github.com/Marcholio/polttoaine-saa-backend#readme"
+  "homepage": "https://github.com/Marcholio/polttoaine-saa-backend#readme",
+  "devDependencies": {
+    "serverless-webpack": "^5.5.0",
+    "ts-loader": "^9.1.2",
+    "typescript": "^4.2.4",
+    "webpack": "^5.37.0"
+  }
 }

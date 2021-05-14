@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es5",
+    "lib": ["es5", "ES2015.Promise"],
+    "outDir": ".build",
+    "moduleResolution": "node",
+    "rootDir": "./"
+  }
+}
