@@ -36,3 +36,4 @@ functions:
           path: stations
           method: GET
           private: true
+          cors: true
