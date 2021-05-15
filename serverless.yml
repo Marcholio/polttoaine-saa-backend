@@ -1,4 +1,4 @@
-service: polttoaine-saa-backend
+service: polttoaine-saa
 frameworkVersion: "2"
 
 provider:
@@ -21,7 +21,26 @@ provider:
       burstLimit: 20
       rateLimit: 10
 
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:batchWriteItem
+        - dynamodb:scan
+      Resource:
+        - !Join
+          - ""
+          - - !Sub "arn:aws:dynamodb:${self:provider.region}:${AWS::AccountId}:table/"
+            - !Ref stationsTable
+
+  environment:
+    STATIONS_TABLE: ${self:custom.stationsTable}
+    COORDINATES_INDEX: ${self:custom.coordinatesIndex}
+    GEOCODING_API_KEY: ${file(./variables/${self:provider.stage}.yml):geocodingApiKey}
+    CORS_ORIGIN: ${file(./variables/${self:provider.stage}.yml):corsOrigin}
+
 custom:
+  stationsTable: ${self:service}-${self:provider.stage}-stations
+  coordinatesIndex: stations-with-coordinates
   webpack:
     includeModules: true
 
@@ -37,3 +56,41 @@ functions:
           method: GET
           private: true
           cors: true
+
+  updatePrices:
+    handler: src/handler.updatePrices
+    timeout: 30
+    events:
+      - schedule:
+          rate: rate(1 hour)
+          enabled: ${file(./variables/${self:provider.stage}.yml):integrationsEnabled}
+
+resources:
+  Resources:
+    stationsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.stationsTable}
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: lat
+            AttributeType: "N"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:custom.coordinatesIndex}
+            KeySchema:
+              - AttributeName: id
+                KeyType: HASH
+              - AttributeName: lat
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

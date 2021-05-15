@@ -6,7 +6,7 @@ module.exports = {
   mode: isLocal ? "development" : "production",
   entry: slsw.lib.entries,
   target: "node",
-  resolve: { extensions: [".ts"] },
+  resolve: { extensions: [".ts", ".js"] },
   output: {
     libraryTarget: "commonjs",
     path: path.join(__dirname, ".webpack"),

@@ -1,0 +1,3 @@
+geocodingApiKey: <google geo coding api key here>
+integrationsEnabled: false
+corsOrigin: "*"

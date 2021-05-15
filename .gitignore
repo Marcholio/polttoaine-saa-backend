@@ -1,3 +1,7 @@
+variables/*.yml
+!variables/template.yml
+
+
 # Logs
 logs
 *.log
