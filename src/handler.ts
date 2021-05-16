@@ -1,19 +1,9 @@
 import dynamo from "./dynamodb";
 import { addLocation } from "./integrations/locations";
 import { getPrices } from "./integrations/prices";
+import { convertDBStationWithLocation } from "./utils";
 
-import { DBStationWithLoc, Station } from "./types";
-
-const convertDBStationWithLocation = (station: DBStationWithLoc): Station => ({
-  id: station.id,
-  name: station.name,
-  coordinates: [station.lon, station.lat],
-  prices: {
-    Ysi5: station.Ysi5,
-    Ysi8: station.Ysi8,
-    Diesel: station.Diesel,
-  },
-});
+import { DBStationWithLoc } from "./types";
 
 export const getStations = async () => {
   const dbStations = await dynamo.getStations();
@@ -37,15 +27,19 @@ export const updatePrices = async () => {
   const existingStations = await dynamo.getStations();
   const existingStationIds = existingStations.map((station) => station.id);
 
+  // New stations without location info
   const newStations = newData.filter(
     (station) => !existingStationIds.includes(station.id)
   );
 
   const newStationsWithLoc: DBStationWithLoc[] = [];
 
+  // Add location info for new stations
   for (let i = 0; i < newStations.length; i++) {
     const station = newStations[i];
+
     const stationWithLoc = await addLocation(station);
+
     if (stationWithLoc) {
       newStationsWithLoc.push(stationWithLoc);
     }
@@ -54,7 +48,7 @@ export const updatePrices = async () => {
   const updatedStations = existingStations.map((station) => {
     const updated = newData.find((u) => u.id === station.id);
 
-    // Replace previous price data with new data
+    // Replace previous price data with new data, if updated values are found
     if (updated) {
       return {
         ...station,
@@ -68,6 +62,7 @@ export const updatePrices = async () => {
     return station;
   });
 
+  // Store new and updated stations to db
   await dynamo.updateStations(newStationsWithLoc.concat(updatedStations));
 
   return "OK";

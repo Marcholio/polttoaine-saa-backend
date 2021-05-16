@@ -30,7 +30,11 @@ const getStation = async (url: string): Promise<DBStation | null> => {
   const $ = load(await res.text());
 
   const id = decodeURI(url).split("/").reverse()[0];
+
+  // Station name from header
   const name = $("article h2").text().split(":").reverse()[0].trim();
+
+  // Parse updated info from "Hinnat viimeks (14.5.2021)" format
   const updatedDate = parse(
     $("article dt").text().replace("Hinnat viimeksi (", "").replace(")", ""),
     "dd.MM.yyyy",
@@ -39,6 +43,7 @@ const getStation = async (url: string): Promise<DBStation | null> => {
 
   const prices: any = {};
 
+  // Loop through all prices and parse price info
   $("article ul li").each((i, elem) => {
     const fuel = $(elem).text().split(":")[0];
     const price = $(elem)
@@ -60,7 +65,7 @@ const getStation = async (url: string): Promise<DBStation | null> => {
   });
 
   // Ignore too old data
-  if (differenceInDays(new Date(), updatedDate) > 5) {
+  if (differenceInDays(new Date(), updatedDate) > 7) {
     return null;
   }
 
@@ -78,7 +83,8 @@ export const getPrices = async (): Promise<DBStation[]> => {
 
   const stations: DBStation[] = [];
 
-  // Synchronous fetch due to web page query limits on bensanhinta.com
+  // Synchronous fetch due to web page query limit on bensanhinta.com.
+  // Could add some delay to fetching if the limit becomes an issue in the future.
   for (const i in stationUrls) {
     const station = await getStation(stationUrls[i]);
     if (station) {

@@ -3,10 +3,9 @@ import {
   PutItemInputAttributeMap,
   WriteRequest,
 } from "aws-sdk/clients/dynamodb";
-
 import chunk from "lodash-es/chunk";
 
-import { Station, DBStationWithLoc } from "./types";
+import { DBStationWithLoc } from "./types";
 
 const dynamo = new DynamoDB.DocumentClient();
 
@@ -34,7 +33,7 @@ const updateStations = async (stations: DBStationWithLoc[]): Promise<void> => {
     PutRequest: { Item: s as PutItemInputAttributeMap },
   }));
 
-  // Split request in to 25 item batches
+  // Split request in to 25 item batches due to dynamo limitations
   const chunkedRequests = chunk(putRequests, 25);
 
   await Promise.all(

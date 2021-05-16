@@ -25,7 +25,9 @@ export const addLocation = async (
   station: DBStation
 ): Promise<DBStationWithLoc | null> => {
   console.log(`Fetching location for ${station.name}`);
+
   const stationAddress = encodeURI(station.name);
+
   const res = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${stationAddress}&key=${process.env.GEOCODING_API_KEY}`
   );
@@ -34,6 +36,7 @@ export const addLocation = async (
 
   if (body.results.length === 0) {
     console.error(`No results found for ${station.name}`);
+    // TODO: Could add some better retry logic for stations without results
     return null;
   }
 
