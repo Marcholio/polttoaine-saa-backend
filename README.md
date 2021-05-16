@@ -1,6 +1,6 @@
 # polttoaine-saa-backend
 
-This is the backend service for fuel price weather map service: https://marcholio.github.io/polttoaine-saa-frontend. It shows fuel prices in Espoo as a heatmap, indicating where the highest prices are.
+This is the backend service for fuel price weather map service: https://marcholio.github.io/polttoaine-saa-frontend. It shows fuel prices in Espoo as a heatmap, indicating where the highest prices are. Check this [repository](https://github.com/Marcholio/polttoaine-saa-frontend) for the frontend project.
 
 ## Overall design
 
@@ -41,7 +41,7 @@ sls deploy --stage <env> --aws-profile <your-profile>
 
 ## License
 
-Licensed under MIT license. See LICENSE.md for further information.
+Licensed under MIT license. See LICENSE for further information.
 
 ## Known limitations
 
