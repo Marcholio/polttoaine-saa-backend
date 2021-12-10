@@ -9,6 +9,7 @@ provider:
   apiName: polttoaine-saa-${self:provider.stage}
   apiKeys:
     - polttoaine-saa-${self:provider.stage}-key
+  logRetentionInDays: 30
 
   stage: ${opt:stage, 'dev'}
   region: eu-central-1
